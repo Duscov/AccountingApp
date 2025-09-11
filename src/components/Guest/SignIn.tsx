@@ -1,36 +1,62 @@
-import {useState} from "react";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../app/hooks";
+import { loginUser } from "../../features/api/accountApi";
+import { useNavigate } from "react-router";
 
+const SignIn = () => {
+    const [login, setLogin] = useState("");
+    const [password, setPassword] = useState("");
 
-    const SignIn = () => {
-    const [login, setLogin] = useState('');
-    const [password, setPassword] = useState('');
-    const handleClickSignIn = () => {
-        //TODO use Dispatch
-    }
+    // достаём сразу все нужные поля
+    const { user, loading, error } = useAppSelector((state) => state.user);
+
+    const dispatch = useAppDispatch();
+    const navigate = useNavigate();
+
     const handleClickClear = () => {
-        setPassword("");
         setLogin("");
-    }
+        setPassword("");
+    };
 
+    const handleClickSignIn = () => {
+        if (!login || !password) {
+            return;
+        }
+        dispatch(loginUser({ login, password }));
+    };
+
+    useEffect(() => {
+        if (user?.login) {
+            navigate("/profile");
+        }
+    }, [user, navigate]);
 
     return (
         <div>
-            <label>Login:
+            <h2>Sign In</h2>
+            <label>
+                Login:
                 <input
-                    type={'text'}
-                    onChange={e => setLogin(e.target.value)}
+                    type="text"
                     value={login}
+                    onChange={(e) => setLogin(e.target.value)}
                 />
             </label>
-            <label>Password:
+            <label>
+                Password:
                 <input
-                    type={'text'}
-                    onChange={e => setPassword(e.target.value)}
+                    type="password"
                     value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                 />
             </label>
-            <button onClick={handleClickSignIn}>Sign In</button>
+
+            <button onClick={handleClickSignIn} disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
+            </button>
             <button onClick={handleClickClear}>Clear</button>
+
+            {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );
 };
