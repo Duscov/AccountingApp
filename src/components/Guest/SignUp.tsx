@@ -1,74 +1,57 @@
-import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../app/hooks";
-import { registerUser } from "../../features/api/accountApi";
-import { useNavigate } from "react-router";
+import {useState} from "react";
+import {useAppDispatch} from "../../app/hooks.ts";
+import {registerUser} from "../../features/api/accountApi.ts";
 
 const SignUp = () => {
-    const [login, setLogin] = useState("");
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-
-    const { user, loading, error } = useAppSelector((state) => state.user);
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
     const dispatch = useAppDispatch();
-    const navigate = useNavigate();
-
-    const handleClickClear = () => {
-        setLogin("");
-        setPassword("");
-        setConfirmPassword("");
-    };
 
     const handleClickSignUp = () => {
-        if (!login || !password || !confirmPassword) {
-            return;
-        }
-        if (password !== confirmPassword) {
-            alert("Passwords do not match");
-            return;
-        }
-        dispatch(registerUser({ login, password }));
-    };
+        dispatch(registerUser({login, password, firstName, lastName}))
+    }
 
-    useEffect(() => {
-        if (user?.login) {
-            navigate("/profile");
-        }
-    }, [user, navigate]);
+    const handleClickClear = () => {
+        setPassword("");
+        setLogin("");
+        setFirstName('');
+        setLastName('');
+    }
 
     return (
         <div>
-            <h2>Sign Up</h2>
-            <label>
-                Login:
+            <label>Login:
                 <input
-                    type="text"
+                    type={'text'}
+                    onChange={e => setLogin(e.target.value)}
                     value={login}
-                    onChange={(e) => setLogin(e.target.value)}
                 />
             </label>
-            <label>
-                Password:
+            <label>Password:
                 <input
-                    type="password"
+                    type={'password'}
+                    onChange={e => setPassword(e.target.value)}
                     value={password}
-                    onChange={(e) => setPassword(e.target.value)}
                 />
             </label>
-            <label>
-                Confirm Password:
+            <label>FirstName:
                 <input
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    type={'text'}
+                    onChange={e => setFirstName(e.target.value)}
+                    value={firstName}
                 />
             </label>
-
-            <button onClick={handleClickSignUp} disabled={loading}>
-                {loading ? "Signing up..." : "Sign Up"}
-            </button>
+            <label>LastName:
+                <input
+                    type={'text'}
+                    onChange={e => setLastName(e.target.value)}
+                    value={lastName}
+                />
+            </label>
+            <button onClick={handleClickSignUp}>Sign Up</button>
             <button onClick={handleClickClear}>Clear</button>
-
-            {error && <p style={{ color: "red" }}>{error}</p>}
         </div>
     );
 };
