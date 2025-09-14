@@ -1,17 +1,22 @@
 import {useState} from "react";
+import {useAppDispatch} from "../../app/hooks";
+import {fetchUser} from "../../features/api/accountApi";
+import {createToken} from "../../utils/constants";
 
 
-    const SignIn = () => {
+const SignIn = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
+    const dispatch = useAppDispatch();
+
     const handleClickSignIn = () => {
-        //TODO use Dispatch
+        dispatch(fetchUser(createToken(login, password)));
     }
+
     const handleClickClear = () => {
         setPassword("");
         setLogin("");
     }
-
 
     return (
         <div>
@@ -24,7 +29,7 @@ import {useState} from "react";
             </label>
             <label>Password:
                 <input
-                    type={'text'}
+                    type={'password'}
                     onChange={e => setPassword(e.target.value)}
                     value={password}
                 />

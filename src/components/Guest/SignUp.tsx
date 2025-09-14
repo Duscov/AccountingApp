@@ -1,20 +1,23 @@
 import {useState} from "react";
-
+import {useAppDispatch} from "../../app/hooks.ts";
+import {registerUser} from "../../features/api/accountApi.ts";
 
 const SignUp = () => {
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
+    const dispatch = useAppDispatch();
 
     const handleClickSignUp = () => {
-        //TODO use Dispatch
+        dispatch(registerUser({login, password, firstName, lastName}))
     }
+
     const handleClickClear = () => {
         setPassword("");
         setLogin("");
-        setFirstName("");
-        setLastName("");
+        setFirstName('');
+        setLastName('');
     }
 
     return (
@@ -28,19 +31,19 @@ const SignUp = () => {
             </label>
             <label>Password:
                 <input
-                    type={'text'}
+                    type={'password'}
                     onChange={e => setPassword(e.target.value)}
                     value={password}
                 />
             </label>
-            <label>First Name:
+            <label>FirstName:
                 <input
                     type={'text'}
                     onChange={e => setFirstName(e.target.value)}
                     value={firstName}
                 />
             </label>
-            <label>Last Name:
+            <label>LastName:
                 <input
                     type={'text'}
                     onChange={e => setLastName(e.target.value)}
